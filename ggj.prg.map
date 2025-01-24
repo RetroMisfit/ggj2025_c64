@@ -1,0 +1,254 @@
+Modules list:
+-------------
+crt0.o:
+    CODE              Offs=000000  Size=00001A  Align=00001  Fill=0000
+c64_asm.o:
+    CODE              Offs=00001A  Size=00006D  Align=00001  Fill=0000
+    SID               Offs=000000  Size=000BCF  Align=00001  Fill=0000
+main.o:
+    CODE              Offs=000087  Size=000DAF  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=0000A5  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000044  Align=00001  Fill=0000
+    CHAR              Offs=000000  Size=000600  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(add.o):
+    CODE              Offs=000E36  Size=00001C  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(addeqsp.o):
+    CODE              Offs=000E52  Size=000011  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(addysp.o):
+    CODE              Offs=000E63  Size=00000E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(aslax1.o):
+    CODE              Offs=000E71  Size=000008  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(aslax3.o):
+    CODE              Offs=000E79  Size=00000E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(decsp2.o):
+    CODE              Offs=000E87  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(decsp3.o):
+    CODE              Offs=000E94  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(decsp5.o):
+    CODE              Offs=000EA1  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(icmp.o):
+    CODE              Offs=000EAE  Size=00002E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(incsp1.o):
+    CODE              Offs=000EDC  Size=000007  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(incsp2.o):
+    CODE              Offs=000EE3  Size=000016  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(incsp3.o):
+    CODE              Offs=000EF9  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(incsp5.o):
+    CODE              Offs=000EFE  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(incsp6.o):
+    CODE              Offs=000F03  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(ldai.o):
+    CODE              Offs=000F08  Size=00000C  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(memset.o):
+    CODE              Offs=000F14  Size=00005D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(mul8.o):
+    CODE              Offs=000F71  Size=00003A  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(mulax6.o):
+    CODE              Offs=000FAB  Size=000016  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(popptr1.o):
+    CODE              Offs=000FC1  Size=00000E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(pusha.o):
+    CODE              Offs=000FCF  Size=000016  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(pushax.o):
+    CODE              Offs=000FE5  Size=00001A  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(shrax1.o):
+    CODE              Offs=000FFF  Size=000008  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(staspidx.o):
+    CODE              Offs=001007  Size=000016  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(staxspi.o):
+    CODE              Offs=00101D  Size=00001B  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/c64.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+ZEROPAGE              000006  00001F  00001A  00001
+BSS                   000200  000243  000044  00001
+CODE                  0007FF  001836  001038  00001
+RODATA                001837  0018DB  0000A5  00001
+SID                   00A200  00ADCE  000BCF  00001
+CHAR                  00C000  00C5FF  000600  00001
+
+
+Exports list by name:
+---------------------
+__STARTUP__               000001 REA    _init_audio               00084F RLA    
+_init_nmi                 00082C RLA    _main                     000B66 RLA    
+_memset                   00171B RLA    _start_music              000822 RLA    
+_wait_raster              000819 RLA    addeq0sp                  001651 RLA    
+addysp                    001663 RLA    decsp2                    001686 RLA    
+decsp3                    001693 RLA    decsp5                    0016A0 RLA    
+incsp1                    0016DB RLA    incsp2                    0016EA RLA    
+incsp3                    0016F8 RLA    incsp5                    0016FD RLA    
+incsp6                    001702 RLA    ldaidx                    001707 RLA    
+mulax6                    0017AA RLA    popax                     0016E2 RLA    
+popptr1                   0017C0 RLA    ptr1                      00000E RLZ    
+ptr2                      000010 RLZ    ptr3                      000012 RLZ    
+ptr4                      000014 RLZ    pusha                     0017D2 RLA    
+pusha0                    0017E6 RLA    pushax                    0017E8 RLA    
+shlax1                    001670 RLA    shlax3                    001678 RLA    
+shrax1                    0017FE RLA    sp                        000006 RLZ    
+sreg                      000008 RLZ    staspidx                  001806 RLA    
+staxspidx                 00181C RLA    tmp1                      000016 RLZ    
+tosaddax                  001637 RLA    tosicmp                   0016AF RLA    
+tosumula0                 001770 RLA    
+
+
+Exports list by value:
+----------------------
+__STARTUP__               000001 REA    sp                        000006 RLZ    
+sreg                      000008 RLZ    ptr1                      00000E RLZ    
+ptr2                      000010 RLZ    ptr3                      000012 RLZ    
+ptr4                      000014 RLZ    tmp1                      000016 RLZ    
+_wait_raster              000819 RLA    _start_music              000822 RLA    
+_init_nmi                 00082C RLA    _init_audio               00084F RLA    
+_main                     000B66 RLA    tosaddax                  001637 RLA    
+addeq0sp                  001651 RLA    addysp                    001663 RLA    
+shlax1                    001670 RLA    shlax3                    001678 RLA    
+decsp2                    001686 RLA    decsp3                    001693 RLA    
+decsp5                    0016A0 RLA    tosicmp                   0016AF RLA    
+incsp1                    0016DB RLA    popax                     0016E2 RLA    
+incsp2                    0016EA RLA    incsp3                    0016F8 RLA    
+incsp5                    0016FD RLA    incsp6                    001702 RLA    
+ldaidx                    001707 RLA    _memset                   00171B RLA    
+tosumula0                 001770 RLA    mulax6                    0017AA RLA    
+popptr1                   0017C0 RLA    pusha                     0017D2 RLA    
+pusha0                    0017E6 RLA    pushax                    0017E8 RLA    
+shrax1                    0017FE RLA    staspidx                  001806 RLA    
+staxspidx                 00181C RLA    
+
+
+Imports list:
+-------------
+__STARTUP__ (crt0.o):
+    main.o                    main.s(19)
+_init_audio (c64_asm.o):
+    main.o                    main.s(29)
+_init_nmi (c64_asm.o):
+    main.o                    main.s(30)
+_main (main.o):
+    crt0.o                    crt0.s(1)
+_memset (memset.o):
+    main.o                    main.s(25)
+_start_music (c64_asm.o):
+    main.o                    main.s(31)
+_wait_raster (c64_asm.o):
+    main.o                    main.s(32)
+addeq0sp (addeqsp.o):
+    main.o                    main.s(3724)
+addysp (addysp.o):
+    incsp6.o                  runtime/incsp6.s(8)
+    incsp5.o                  runtime/incsp5.s(8)
+    incsp3.o                  runtime/incsp3.s(8)
+decsp2 (decsp2.o):
+    main.o                    main.s(3724)
+decsp3 (decsp3.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+decsp5 (decsp5.o):
+    main.o                    main.s(3724)
+incsp1 (incsp1.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+incsp2 (incsp2.o):
+    staxspi.o                 runtime/staxspi.s(9)
+    staspidx.o                runtime/staspidx.s(8)
+    popptr1.o                 runtime/popptr1.s(8)
+incsp3 (incsp3.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+incsp5 (incsp5.o):
+    main.o                    main.s(3724)
+incsp6 (incsp6.o):
+    main.o                    main.s(3724)
+ldaidx (ldai.o):
+    main.o                    main.s(3724)
+mulax6 (mulax6.o):
+    main.o                    main.s(3724)
+popax (incsp2.o):
+    memset.o                  common/memset.s(19)
+popptr1 (popptr1.o):
+    mul8.o                    runtime/mul8.s(9)
+ptr1 (zeropage.o):
+    staxspi.o                 runtime/staxspi.s(10)
+    staspidx.o                runtime/staspidx.s(9)
+    popptr1.o                 runtime/popptr1.s(9)
+    mulax6.o                  runtime/mulax6.s(9)
+    mul8.o                    runtime/mul8.s(10)
+    memset.o                  common/memset.s(20)
+    ldai.o                    runtime/ldai.s(8)
+    main.o                    main.s(11)
+ptr2 (zeropage.o):
+    memset.o                  common/memset.s(20)
+ptr3 (zeropage.o):
+    memset.o                  common/memset.s(20)
+ptr4 (zeropage.o):
+    mul8.o                    runtime/mul8.s(10)
+pusha (pusha.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+pusha0 (pushax.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+pushax (pushax.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+shlax1 (aslax1.o):
+    main.o                    main.s(3724)
+shlax3 (aslax3.o):
+    main.o                    main.s(3724)
+shrax1 (shrax1.o):
+    main.o                    main.s(3724)
+sp (zeropage.o):
+    incsp2.o                  runtime/incsp2.s(8)
+    addysp.o                  runtime/addysp.s(8)
+    staxspi.o                 runtime/staxspi.s(10)
+    staspidx.o                runtime/staspidx.s(9)
+    pushax.o                  runtime/pushax.s(8)
+    pusha.o                   runtime/pusha.s(8)
+    popptr1.o                 runtime/popptr1.s(9)
+    memset.o                  common/memset.s(20)
+    incsp1.o                  runtime/incsp1.s(8)
+    icmp.o                    runtime/icmp.s(9)
+    decsp5.o                  runtime/decsp5.s(8)
+    decsp3.o                  runtime/decsp3.s(8)
+    decsp2.o                  runtime/decsp2.s(8)
+    addeqsp.o                 runtime/addeqsp.s(8)
+    add.o                     runtime/add.s(12)
+    main.o                    main.s(10)
+    crt0.o                    /opt/homebrew/Cellar/cc65/2.19/share/cc65/asminc/zeropage.inc(11)
+sreg (zeropage.o):
+    icmp.o                    runtime/icmp.s(9)
+staspidx (staspidx.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+staxspidx (staxspi.o):
+    main.o                    main.s(3724)
+tmp1 (zeropage.o):
+    staxspi.o                 runtime/staxspi.s(10)
+    staspidx.o                runtime/staspidx.s(9)
+    shrax1.o                  runtime/shrax1.s(8)
+    aslax3.o                  runtime/aslax3.s(8)
+    aslax1.o                  runtime/aslax1.s(8)
+    add.o                     runtime/add.s(12)
+tosaddax (add.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+tosicmp (icmp.o):
+    main.o                    main.s(3724)
+tosumula0 (mul8.o):
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+    main.o                    main.s(3724)
+
