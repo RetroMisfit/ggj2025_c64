@@ -7,7 +7,7 @@
 
 make clean
 make all
-cp ggj.prg bin/ggj.prg 
+mv ggj.prg bin/ggj.prg 
 
 if [ "$1" == "c64" ]; then
 /Applications/VICE_3_8/bin/x64sc -model c64 -autostart "bin/ggj.prg"
