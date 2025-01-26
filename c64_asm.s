@@ -3,7 +3,7 @@
 .export   _init_nmi
 .export   _start_music
 
-PARAM1 = $33C
+PARAM1 = $FD
 sid_init = $A200
 sid_play = $A203
 
@@ -27,12 +27,20 @@ _start_music:
    cli
 rts
 
+nmi_nop:
+rti            
+
 _init_nmi:
-   SEI             
+   sei             
+   ;lda #<nmi_nop
+   ;sta $fffa
+   ;lda #>nmi_nop
+   ;sta $fffb
+
    lda #<nmi_nop
-   sta $fffa
-   lda #>nmi_nop
-   sta $fffb
+   ldx #>nmi_nop
+   sta $0318
+   stx $0319
 
    lda #$00
    sta $dd0e       
@@ -46,9 +54,6 @@ _init_nmi:
    sta $dd0e       
    cli
 rts
-
-nmi_nop:
-rti            
 
 _init_audio:
    sei        

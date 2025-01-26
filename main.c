@@ -41,7 +41,7 @@ void __fastcall__ wait_raster(void);
 #define COLOR_ADDR      0xD800
 #define SCREEN_W        40
 #define SCREEN_H        25
-#define PARAM1          0x33C
+#define PARAM1          0xFD
 #define PS              1
 #define BULLET_SPEED    8
 #define VALUE_FREE      0x1FFF
@@ -209,7 +209,6 @@ void print_number(byte x, byte y, byte num)
     print(x,y,8,tmp);
 }
 
-/* helper function for debug purposes
 void print_number_word(byte x, byte y, word num)
 {
     tmp[0] = '0';
@@ -224,7 +223,7 @@ void print_number_word(byte x, byte y, word num)
     while (num >= 10) {++tmp[3]; num -= 10;}
     tmp[4] += num;
     print(x,y,8,tmp);
-}*/
+}
 
 void SPRITEX(byte id, word x) 
 {
@@ -316,7 +315,8 @@ void main()
     POKE(0x288,0x04);
     POKE(0xDD00,(PEEK(0xDD00)&0xFC)|0x00); // VIC bank
     POKE(0x01,0x35);
-    memset(0x200,0,0xfd);
+
+    memset(0x220,0,0x70);
     POKE(0xD020,15); // border col
     // 00 bg col
     // 01 screen ram 0xf0
@@ -332,21 +332,22 @@ void main()
     POKE(0xD017,0x00); // sprite double x
     POKE(0xD01D,0x00); // sprite double y
     POKE(0xD01C,0x01); // sprite multicolor
-    POKE(0xD01B,0); // sprite priority
+    //POKE(0xD01B,0); // sprite priority
 
     POKE(0xD025,15); // sprite extra color 1
     POKE(0xD026,0); // sprite extra color 2
+    
+    hiscore = 0; 
+    POKE(0xD021,0);
+
+    init_nmi();
+    hw_set_screen_state(1);
+    init_audio();
+    start_music();
 
     SPRITE_ENABLE(0);
     SPRITE_POINTER(0,0);
     SPRITE_COLOR(0,1);
-
-    init_nmi();
-    init_audio();
-    start_music();
-    hiscore = 0; 
-    POKE(0xD021,0);
-    
     // game start
     start_again:
     score = 0; 
