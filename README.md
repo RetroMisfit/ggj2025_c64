@@ -9,5 +9,8 @@ Code : CC65
 
 Gfx : Aseprite
 
+## Gameplay video 
+[Youtube](https://youtu.be/xc_JRUgbaEw)
+
 ## Motivation music
 [Cockney Rejects:I'm Forever Blowing Bubbles (Top Of The Pops 22nd May 1980)](https://youtu.be/PJ0ofmCUQ8g)
