@@ -54,6 +54,6 @@ all:   $(EXELIST)
 
 .PHONY:	clean
 clean:
-	$(RM) $(C_OBJS:.o=.s) $(C_OBJS) $(S_OBJS) $(EXELIST) *.map bin/*.prg
+	$(RM) $(C_OBJS:.o=.s) $(C_OBJS) $(S_OBJS) $(EXELIST) *.map 
 
 

@@ -83,10 +83,13 @@ byte spawn;
 byte speed;
 byte pattern_counter;
 byte level_counter;
+const byte const pattern_easy[] = {SCREEN_W/2,SCREEN_H,TYPE_UP,10, SCREEN_W/2,0,TYPE_DOWN,10,0};
 const byte const pattern_up[] = {SCREEN_W/2,SCREEN_H,TYPE_UP,2, 3,SCREEN_H,TYPE_UP,2, SCREEN_W-3,SCREEN_H,TYPE_UP,2, SCREEN_W/2,SCREEN_H,TYPE_UP,20,0};
 const byte const pattern_down[] = {SCREEN_W/2,0,TYPE_DOWN,2, 3,0,TYPE_DOWN,2, SCREEN_W-3,0,TYPE_DOWN,2, SCREEN_W/2,0,TYPE_DOWN,2,0};
 const byte const pattern_right[] = {1,SCREEN_H/2,TYPE_RIGHT,2, 1,3,TYPE_RIGHT,2, 1,SCREEN_H-3,TYPE_RIGHT,2, 1,SCREEN_H/2,TYPE_RIGHT,2,0};
 const byte const pattern_left[] = {SCREEN_W,SCREEN_H/2,TYPE_LEFT,2, SCREEN_W,3,TYPE_LEFT,2, SCREEN_W,SCREEN_H-3,TYPE_LEFT,2, SCREEN_W,SCREEN_H/2,TYPE_LEFT,2,0};
+const byte const pattern_corners[] ={1,0,TYPE_DOWN,3, SCREEN_W,SCREEN_H,TYPE_UP,3, SCREEN_W,0,TYPE_DOWN,3, 1,SCREEN_H,TYPE_UP,3, 0};
+
 const byte const pattern_all[] = 
 {
     SCREEN_W/2,SCREEN_H,TYPE_UP,2, 
@@ -106,10 +109,12 @@ const byte const pattern_all_follow[] =
 
 const byte* const level[] = 
 {
-    pattern_up,
-    pattern_down,
+    pattern_easy,
     pattern_left,
     pattern_right,
+    pattern_down,
+    pattern_up,
+    pattern_corners,
     pattern_all,
     pattern_all_follow,
     0,
@@ -134,6 +139,7 @@ word xx;
 byte yy;
 word xxp;
 byte yyp;
+byte blink_counter;
 
 #define MENU 0
 #define RUN  1
@@ -264,12 +270,11 @@ void draw(byte id, byte col,byte x, byte y, byte w, byte h)
 
 const byte blink[8] = {1,15,12,11,11,12,15,1};
 const byte fade[4] = {EMPTY_COL,2,7,1};
+const byte blink2[] = {0,11,11,12,12,15,15,1,1};
 
 const char* const txt_menu       = "+++MENU+++";
 const char* const txt_get_ready  = "+GET+READY";
 const char* const txt_run        = "++MAYHEM++";
-const char* const txt_game_over  = "+GAME+OVER";
-const char* const txt_hiscore    = "NEW+HISCORE";
 const char* txt_ptr; 
 byte txt_cursor;
 
@@ -286,11 +291,7 @@ void set_state(byte s)
     }
     else if (s == GAME_OVER)
     {
-        txt_ptr = txt_game_over;
-        if (hiscore < score)
-        {
-            txt_ptr = txt_hiscore;
-        }
+        txt_ptr = 0;
     }
     else
     {
@@ -332,11 +333,11 @@ void main()
     init_nmi();
     init_audio();
     start_music();
-    score = 0; 
     hiscore = 0; 
     POKE(0xD021,0);
 
     start_again:
+    score = 0; 
     speed = 25;
     show_score = score+1;
     show_hiscore = hiscore+1;
@@ -397,6 +398,7 @@ void main()
     enemy_counter = 0;
     pattern_counter = 0;
     level_counter = 0;
+    blink_counter = 0;
 
     hw_set_screen_state(1);
     loop:
@@ -404,13 +406,34 @@ void main()
     if (state == START || state == GAME_OVER)
     {
         hw_wait(0);
-        i = (counter>>1)&0x7;
-        DEBUG(blink[i]);
+        if (state == GAME_OVER)
+        {
+            i = ((counter>>2)&0x1)<<1;
+            POKE(0xD016,0xC8|i);
+            DEBUG(0);
+        }
+        else 
+        {
+            POKE(0xD016,0xC8);
+            i = (counter>>1)&0x7;
+            DEBUG(blink[i]);
+        }
     }
     else 
     {
-        hw_wait(250);
-        DEBUG(0);
+        if (blink_counter)
+        {
+            --blink_counter;
+            hw_wait(0);
+            DEBUG(blink2[blink_counter]);
+        }
+        else 
+        {
+            POKE(0xD016,0xC8);
+            hw_wait(250);
+            DEBUG(0);
+            POKE(0xD021,0);
+        }
     }
     SPRITEX(0,px>>PS);
     SPRITEY(0,py>>PS);
@@ -509,6 +532,7 @@ void main()
     j = 0x80>>(bg_x>>2);
     POKE(CHAR_ADDR+GETID(5,3)*8+i,j);
     */
+    if (state == GAME_OVER) {bg_x+=2;bg_y+=2;}
     bg_x+=sx;bg_x &= 0x1F;
     j = bg_x>>2;
     bg_y+=sy;bg_y &= 0x1F;   
@@ -525,7 +549,7 @@ void main()
             else if (sx>0) --sx;
         }
         i = counter>>1;
-        if (i >= SCREEN_H*3+2) 
+        if (i >= SCREEN_H*2+2) 
         {
             if (sx == 0 && sy == 0)
             {
@@ -653,10 +677,16 @@ void main()
                 {
                     POKE(SCREEN_ADDR+21+power+(SCREEN_H-1)*SCREEN_W,GETID(1,5));
                     --power;
+                    blink_counter = sizeof(blink2);
                 }
                 else 
                 {
                     set_state(GAME_OVER);
+                    print(16,2,1,"GAME OVER");
+                    if (hiscore < score)
+                    {
+                        print(15,4,1,"NEW HISCORE");
+                    }
                 }
             }
         }
@@ -696,7 +726,7 @@ void main()
             else 
             {
                 if (enemies[i].sy < MAX_ENEMY_SPEED) ++enemies[i].sy;
-                if (enemies[i].y > (SCREEN_H*8<<PS)) 
+                if (enemies[i].y > (SCREEN_H*8<<PS) && enemies[i].y < (SCREEN_H*2*8<<PS)) 
                 {
                     goto remove_enemy;
                 }
