@@ -1,3 +1,9 @@
+// Global Game Jam 2025 game
+// Mika "Misfit" Keränen
+// made in one weekend
+// Le Bubblö Massacrö 
+// Theme : Bubbles
+
 #include <string.h>
 
 #define POKE(_a,_d) *(byte*)(_a) = (_d)
@@ -13,40 +19,60 @@
 typedef unsigned char byte;
 typedef unsigned short word;
 
+// graphics
 #pragma rodata-name("CHAR")
 #include "gfx/gfx.h"
 #include "gfx/sprites.h"
 #include "gfx/sprites_bw.h"
 #pragma rodata-name("RODATA")
-
 #pragma bss-name("BSS")
+
+// assembly functions
 void __fastcall__ init_audio(void);
 void __fastcall__ init_nmi(void);
 void __fastcall__ start_music(void);
 void __fastcall__ wait_raster(void);
 
+// defines and macros
 #define CHAR_ADDR       0xC000
 #define SCREEN_ADDR     0xC800
 #define COLOR_ADDR      0xD800
 #define SCREEN_TO_COL   (COLOR_ADDR-SCREEN_ADDR)
-
 #define COLOR_ADDR      0xD800
-#define SCREEN_W 40
-#define SCREEN_H 25
+#define SCREEN_W        40
+#define SCREEN_H        25
+#define PARAM1          0x33C
+#define PS              1
+#define BULLET_SPEED    8
+#define VALUE_FREE      0x1FFF
+#define MAX_POWER       5
+#define MAX_ENEMIES     5
+#define TYPE_UP         0
+#define TYPE_FOLLOW     1
+#define TYPE_DOWN       2
+#define TYPE_LEFT       3
+#define TYPE_RIGHT      4
+#define MENU            0
+#define RUN             1
+#define GAME_OVER       2 
+#define START           3
+#define EMPTY_COL       6
+#define MAX_SPEED       4
+#define MAX_ENEMY_SPEED 2
+#define SPRITE_X_OFFSET (20)
+#define SPRITE_Y_OFFSET (44+7)
+#define SPRITE_POINTER_ADDR (byte*)(SCREEN_ADDR+1016)
+#define DEBUG(_d) POKE(0xD020,_d)
+#define GETID(_x,_y) (_x+(_y)*bmp_items_w)
+#define EMPTY_TILE GETID(5,3)
+#define SPRITE_ENABLE(_id) POKE(0xD015,PEEK(0xD015)|(0x1<<(_id)))
+#define SPRITE_DISABLE(_id) POKE(0xD015,PEEK(0xD015)&~(0x1<<(_id)))
+#define SPRITEY(_id,_y) POKE(0xD001+(_id)*2,SPRITE_Y_OFFSET+(_y))
+#define SPRITE_POINTER(_id,_p) POKE(SPRITE_POINTER_ADDR+(_id),15+_p)
+#define SPRITE_COLOR(_id,_c) POKE(0xD027+(_id),_c)
+void hw_wait(byte _line) {c_a:POKE(PARAM1,_line);wait_raster();if (PEEK(0xD011)&0x80) goto c_a;}
 
-#define PARAM1 0x33C
-
-#define PS 1
-#define BULLET_SPEED 8
-#define VALUE_FREE 0x1FFF
-#define MAX_POWER 5
-#define MAX_ENEMIES 5
-#define TYPE_UP 0
-#define TYPE_FOLLOW 1
-#define TYPE_DOWN 2
-#define TYPE_LEFT 3
-#define TYPE_RIGHT 4
-
+// data structures
 typedef struct 
 {
     word x;
@@ -57,11 +83,9 @@ typedef struct
     byte type;
 } Enemy;
 
+// variables
 Enemy enemies[MAX_ENEMIES];
 byte enemy_counter;
-
-void hw_wait(byte _line) {c_a:POKE(PARAM1,_line);wait_raster();if (PEEK(0xD011)&0x80) goto c_a;}
-
 byte i;
 byte j;
 byte k;
@@ -83,6 +107,39 @@ byte spawn;
 byte speed;
 byte pattern_counter;
 byte level_counter;
+signed char sx;
+signed char sy;
+signed char si;
+signed char sj;
+signed short swi;
+byte counter;
+byte bg_x;
+byte bg_y;
+byte state;
+word score;
+word show_score;
+word hiscore;
+word show_hiscore;
+byte tmp[6];
+byte power;
+word xx;
+byte yy;
+word xxp;
+byte yyp;
+byte blink_counter;
+const char* txt_ptr; 
+byte txt_cursor;
+
+// const data
+const byte blink[8] = {1,15,12,11,11,12,15,1};
+const byte fade[4] = {EMPTY_COL,12,15,1};
+const byte blink2[] = {0,11,11,12,12,15,15,1,1};
+
+const char* const txt_menu       = "+++MENU+++";
+const char* const txt_get_ready  = "+GET+READY";
+const char* const txt_run        = "++MAYHEM++";
+
+// const level data
 const byte const pattern_easy[] = {SCREEN_W/2,SCREEN_H,TYPE_UP,10, SCREEN_W/2,0,TYPE_DOWN,10,0};
 const byte const pattern_up[] = {SCREEN_W/2,SCREEN_H,TYPE_UP,2, 3,SCREEN_H,TYPE_UP,2, SCREEN_W-3,SCREEN_H,TYPE_UP,2, SCREEN_W/2,SCREEN_H,TYPE_UP,20,0};
 const byte const pattern_down[] = {SCREEN_W/2,0,TYPE_DOWN,2, 3,0,TYPE_DOWN,2, SCREEN_W-3,0,TYPE_DOWN,2, SCREEN_W/2,0,TYPE_DOWN,2,0};
@@ -98,6 +155,7 @@ const byte const pattern_all[] =
     SCREEN_W,SCREEN_H/2,TYPE_LEFT,20,
     0, 
 };
+
 const byte const pattern_all_follow[] = 
 {
     SCREEN_W/2,SCREEN_H,TYPE_FOLLOW,1, 
@@ -120,47 +178,7 @@ const byte* const level[] =
     0,
 };
 
-signed char sx;
-signed char sy;
-signed char si;
-signed char sj;
-signed short swi;
-byte counter;
-byte bg_x;
-byte bg_y;
-byte state;
-word score;
-word show_score;
-word hiscore;
-word show_hiscore;
-byte tmp[6];
-byte power;
-word xx;
-byte yy;
-word xxp;
-byte yyp;
-byte blink_counter;
-
-#define MENU 0
-#define RUN  1
-#define GAME_OVER 2 
-#define START 3
-
-#define SPRITE_X_OFFSET (20)
-#define SPRITE_Y_OFFSET (44+7)
-#define SPRITE_POINTER_ADDR (byte*)(SCREEN_ADDR+1016)
-#define MAX_SPEED 4
-#define MAX_ENEMY_SPEED 2
-#define DEBUG(_d) POKE(0xD020,_d)
-#define GETID(_x,_y) (_x+(_y)*bmp_items_w)
-#define EMPTY_TILE GETID(5,3)
-#define EMPTY_COL   6
-#define SPRITE_ENABLE(_id) POKE(0xD015,PEEK(0xD015)|(0x1<<(_id)))
-#define SPRITE_DISABLE(_id) POKE(0xD015,PEEK(0xD015)&~(0x1<<(_id)))
-#define SPRITEY(_id,_y) POKE(0xD001+(_id)*2,SPRITE_Y_OFFSET+(_y))
-#define SPRITE_POINTER(_id,_p) POKE(SPRITE_POINTER_ADDR+(_id),15+_p)
-#define SPRITE_COLOR(_id,_c) POKE(0xD027+(_id),_c)
-
+// source code : functions
 void print(byte x, byte y, byte col, const char* txt)
 {
     ptr = SCREEN_ADDR+x+y*SCREEN_W;
@@ -191,6 +209,7 @@ void print_number(byte x, byte y, byte num)
     print(x,y,8,tmp);
 }
 
+/* helper function for debug purposes
 void print_number_word(byte x, byte y, word num)
 {
     tmp[0] = '0';
@@ -205,7 +224,7 @@ void print_number_word(byte x, byte y, word num)
     while (num >= 10) {++tmp[3]; num -= 10;}
     tmp[4] += num;
     print(x,y,8,tmp);
-}
+}*/
 
 void SPRITEX(byte id, word x) 
 {
@@ -268,16 +287,6 @@ void draw(byte id, byte col,byte x, byte y, byte w, byte h)
         }
 }
 
-const byte blink[8] = {1,15,12,11,11,12,15,1};
-const byte fade[4] = {EMPTY_COL,2,7,1};
-const byte blink2[] = {0,11,11,12,12,15,15,1,1};
-
-const char* const txt_menu       = "+++MENU+++";
-const char* const txt_get_ready  = "+GET+READY";
-const char* const txt_run        = "++MAYHEM++";
-const char* txt_ptr; 
-byte txt_cursor;
-
 void set_state(byte s)  
 {
     state = s; counter = 0;
@@ -300,8 +309,10 @@ void set_state(byte s)
     txt_cursor = 0;
 }
 
+// source code : main function
 void main() 
 {
+    // HW init
     POKE(0x288,0x04);
     POKE(0xDD00,(PEEK(0xDD00)&0xFC)|0x00); // VIC bank
     POKE(0x01,0x35);
@@ -335,12 +346,13 @@ void main()
     start_music();
     hiscore = 0; 
     POKE(0xD021,0);
-
+    
+    // game start
     start_again:
     score = 0; 
+    if (show_score == score) show_score = score+1;
+    if (show_hiscore == hiscore) show_hiscore = hiscore+1;
     speed = 25;
-    show_score = score+1;
-    show_hiscore = hiscore+1;
     hw_set_screen_state(0);
     px = ((SCREEN_W*8-12)/2)<<PS;
     py = (4*8/2)<<PS;
@@ -401,8 +413,10 @@ void main()
     blink_counter = 0;
 
     hw_set_screen_state(1);
+    // main loop starts
     loop:
     
+    // wait sync and make effects
     if (state == START || state == GAME_OVER)
     {
         hw_wait(0);
@@ -435,6 +449,7 @@ void main()
             POKE(0xD021,0);
         }
     }
+    // player handling
     SPRITEX(0,px>>PS);
     SPRITEY(0,py>>PS);
     hw_read_input();
@@ -476,10 +491,8 @@ void main()
             bnextdir = DOWN;
         }
     }
-    //i = 1; 
     if (joy&FIRE) 
     {
-        //i = 2;
         if (state == RUN && bx == VALUE_FREE)
         {
             bx = px>>PS;
@@ -520,18 +533,8 @@ void main()
     {
         SPRITE_POINTER(0,j);
     }
-    /*i = bg_y>>2;
-    POKE(CHAR_ADDR+GETID(5,3)*8+i,0x0);
-    if (state == MENU) 
-    {
-        ++bg_y;
-    }
-    bg_y+=sy;bg_y &= 0x1F;   
-    i = bg_y>>2;
-    bg_x+=sx;bg_x &= 0x1F;
-    j = 0x80>>(bg_x>>2);
-    POKE(CHAR_ADDR+GETID(5,3)*8+i,j);
-    */
+
+    // background graphics scrolling
     if (state == GAME_OVER) {bg_x+=2;bg_y+=2;}
     bg_x+=sx;bg_x &= 0x1F;
     j = bg_x>>2;
@@ -539,6 +542,8 @@ void main()
     i = bg_y>>2;
     memcpy(CHAR_ADDR+i+GETID(5,3)*8,CHAR_ADDR+GETID(j,4)*8,8-i);
     memcpy(CHAR_ADDR+GETID(5,3)*8,CHAR_ADDR+GETID(j,4)*8+8-i,i);
+
+    // state specific screen functionalities
     if (state == START)
     {
         if ((counter&0x7)==0)
@@ -566,8 +571,12 @@ void main()
             if (k >= 1 && k <= SCREEN_H-2)
             {
                 memset(COLOR_ADDR+1+(k)*SCREEN_W,fade[j],SCREEN_W-2);
+                if (j == 0)
+                {
+                    memset(SCREEN_ADDR+1+(k)*SCREEN_W,EMPTY_TILE,SCREEN_W-2);
+                }
             }
-
+            ++j; if (j != 4) goto next_line;
             k = 0;
             wi = ((1+i)*8)<<PS;
             next_enemy_pos:
@@ -582,7 +591,7 @@ void main()
             ++k; if (k != MAX_ENEMIES) goto next_enemy_pos;
             if (i >= 0 && i <= SCREEN_H-3)
             {
-                memset(SCREEN_ADDR+1+(1+i)*SCREEN_W,EMPTY_TILE,SCREEN_W-2);
+                memset(SCREEN_ADDR+1+(1+i)*SCREEN_W,GETID(3,3),SCREEN_W-2);
             }
         }
     }
@@ -606,6 +615,8 @@ void main()
             }
         }
     }
+
+    // bullet handling
     if (bx != VALUE_FREE)
     {
         SPRITEX(1,bx);
@@ -623,6 +634,8 @@ void main()
             else by+=BULLET_SPEED;
         }
     }
+
+    // enemy handling
     i = 0;
     xxp = px>>PS;
     yyp = py>>PS;
@@ -659,7 +672,7 @@ void main()
             if (swi > -24 && swi < 8 && sj > -21 && sj < 8)
             {
                 enemies[i].die = 50;
-                ++score;
+                score+=13;
                 SPRITE_DISABLE(1);
                 bx = VALUE_FREE;
             }
@@ -779,6 +792,7 @@ void main()
     skip_enemy:
     ++i; if (i != MAX_ENEMIES) goto next_enemy;
 
+    // level data handling
     if (spawn)
     {
         --spawn;
@@ -786,10 +800,8 @@ void main()
         {
             next_level:
             cptr = level[level_counter];
-            //print_number(10,1,level_counter);
             if (cptr)
             {
-                //print_number(10,2,pattern_counter);
                 if (cptr[pattern_counter] == 0) 
                 {
                     ++level_counter;
@@ -800,14 +812,10 @@ void main()
                 check_next_enemy:
                 if (enemies[i].x == VALUE_FREE)
                 {
-                    //print_number(1,1,cptr[pattern_counter]*8);
                     enemies[i].x = cptr[pattern_counter]*8<<PS;++pattern_counter;
-                    //print_number(1,2,cptr[pattern_counter]*8);
                     enemies[i].y = cptr[pattern_counter]*8<<PS;++pattern_counter;
-                    //print_number(1,3,cptr[pattern_counter]);
                     enemies[i].type = cptr[pattern_counter];++pattern_counter;
                     enemies[i].die = 0;
-                    //print_number(1,4,cptr[pattern_counter]);
                     spawn = cptr[pattern_counter]*speed;++pattern_counter;
                 }
                 else 
@@ -824,6 +832,7 @@ void main()
             }
         }
     }
+    // check and update score texts
     if (show_score != score)
     {
         if (show_score < score) ++show_score; else --show_score;
@@ -834,6 +843,7 @@ void main()
         if (show_hiscore < hiscore) ++show_hiscore; else --show_hiscore;
         print_number_word(SCREEN_W-11,SCREEN_H-1,show_hiscore);
     }
+    // write title bar text
     if (txt_ptr)
     {
         if ((counter&0x07) == 0)
@@ -852,4 +862,5 @@ void main()
         }
     }
     goto loop;
+    // main loop ends
 }
