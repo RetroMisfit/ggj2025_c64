@@ -32,15 +32,15 @@ rti
 
 _init_nmi:
    sei             
-   ;lda #<nmi_nop
-   ;sta $fffa
-   ;lda #>nmi_nop
-   ;sta $fffb
-
    lda #<nmi_nop
-   ldx #>nmi_nop
-   sta $0318
-   stx $0319
+   sta $fffa
+   lda #>nmi_nop
+   sta $fffb
+
+   ;lda #<nmi_nop
+   ;ldx #>nmi_nop
+   ;sta $0318
+   ;stx $0319
 
    lda #$00
    sta $dd0e       
